@@ -1,0 +1,166 @@
+\documentclass{article}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,shapes.symbols}
+
+
+% http://pgf-and-tikz.10981.n7.nabble.com/How-to-create-new-node-shapes-td3134.html
+
+
+\begin{document}
+
+\makeatletter%
+\tikzset{%
+  symbol/.style={%
+    inner sep=0pt,%
+    shape=rectangle,%
+    execute at begin node={%
+      \begin{tikzpicture}
+        \def\tikz <at> atbegin <at> node{}%
+        \tikzset{symbols/.cd, #1}
+      \end{tikzpicture}
+    }%
+  }%
+}%
+\makeatother
+
+\tikzset{%
+  symbol lines/.style={%
+    very thick,%
+    line join=round,%
+  },%
+}%
+\colorlet{symbol color}{red!50}
+
+\tikzset{symbols/.cd,%
+  .unknown/.code={%
+    \let\symbolkey=\pgfkeyscurrentname%
+    \tikzset{\symbolkey={#1}}%
+  },%
+  code/.code=\begin{scope}#1\end{scope},%
+  cylinder top/.code={%
+    \begin{scope}[yscale=0.5]
+      \path [fill=symbol color!50] circle [radius=1cm];
+    \end{scope}
+  },%
+  cylinder body/.code={%
+    \path [fill=symbol color] (-1cm, 0cm) -- (-1cm, -#1) arc
+    (180:360:1cm and 0.5cm) -- (1cm, 0cm) arc (360:180:1cm and 0.5cm)
+    -- cycle; },%
+  router arrows/.code={%
+    \begin{scope}[yscale=0.5]
+      \foreach \i in {0, ..., 3}%
+      \path [fill=symbol color!5, rotate=\i*90+45,
+      xshift={0.25cm+mod(\i,2)*0.625cm}, xscale={mod(\i+1,2)*2-1}]
+      (0cm,0cm) -- (0cm,0.125cm) -- (0.375cm,0.125cm) -- (0.375cm,
+      0.25cm) -- (0.625cm, 0cm) -- (0.375cm, -0.25cm) -- (0.375cm,
+      -0.125cm) -- (0cm, -0.125cm) -- cycle;
+    \end{scope}
+  },%
+  3D box/.code args={width #1 height #2 depth #3}{%
+    \path [fill=symbol color!50] (-#1/2,-#2/2) rectangle ++(#1, #2);%
+    \path [fill=symbol color] (#1/2, -#2/2) -- ++(0cm, #2) -- ++(#3,
+    #3) -- ++(0cm, -#2) -- cycle;%
+    \path [fill=symbol color!75] (-#1/2, #2/2) -- ++(#1, 0cm) --
+    ++(#3, #3) -- ++(-#1, 0cm) -- cycle;%
+  },%
+  arrows from circle/.code={%
+    \path [fill=symbol color!5] circle [radius=0.25cm];%
+    \foreach \i in {0, 45, ..., 315}%
+    \path [symbol lines, draw=symbol color!5, fill=symbol color!5,
+    rotate=\i] (0cm,0cm) -- (#1, 0cm) (#1,0.0625cm) --
+    (#1+0.125cm,0cm) -- (#1,-0.0625cm) -- cycle;%
+  }%
+}%
+
+\tikzset{symbols/.cd,%
+  % ---------%
+  % Internet %
+  % -------- %
+  internet/.code={%
+    \node [cloud, cloud puffs=9, cloud puff arc=110, minimum
+    width=2.5cm, minimum height=1.5cm, fill=symbol color, draw=symbol
+    draw]{};%
+  },%
+%%%%%%%%%%
+% router %
+%%%%%%%%%%
+  router/.style={%
+    cylinder body=0.5cm,%
+    cylinder top,%
+    router arrows%
+ },%
+%%%%%%%%%%%%%%%%%%%
+% generic gateway %
+%%%%%%%%%%%%%%%%%%%
+  generic gateway/.style={%
+    cylinder body=1.25cm,%
+    cylinder top,%
+    router arrows,%
+    code={%
+      \tikzset{yshift=-1.125cm, symbols/.cd, arrows from
+        circle=0.375cm}%
+    }%
+  },%
+%%%%%%%%%%%%%%%%%%%%%%%%
+% Router with firewall %
+%%%%%%%%%%%%%%%%%%%%%%%%
+  router with firewall/.style={%
+    cylinder body=0.25cm,%
+    code={%
+      \tikzset{yshift=-0.3125cm, symbols/.cd, cylinder body=0.5cm}%
+    },%
+    cylinder top,%
+    code={
+      \begin{scope}[yscale=0.5]
+        \clip circle [radius=1cm];%
+        \tikzset{rotate=-45}%
+        \foreach \i in {-3,-2,...,3}{%
+          \draw [draw=symbol color!75, symbol lines](\i*0.5cm,-1cm) --
+          (\i*.5cm,1cm);%
+          \foreach \j in {-1,0, 1}%
+          \draw [draw=symbol color!75, symbol lines]
+          [yshift={mod(\i,2)*0.5cm)}](\i*.5cm,\j*1cm) --
+          (\i*.5cm+0.5cm,\j*1cm);%
+        }%
+      \end{scope}
+    },%
+    router arrows%
+  },%
+%%%%%%%%%%%%%%%%
+% Access point %
+%%%%%%%%%%%%%%%%
+  access point/.style={%
+    3D box=width 2cm height 0.5cm depth 0.25cm,%
+    code={%
+      \path [symbol lines, draw=symbol color!25] (-0.75, 0)%
+      \foreach \i in {0,...,2} { sin ++(0.125,0.125) cos
+        ++(0.125,-0.125) sin ++(0.125,-0.125) cos ++(0.125,0.125) };%
+      \path [symbol lines, draw=symbol color!5, yscale=-1] (-0.75, 0)%
+      \foreach \i in {0,...,2} { sin ++(0.125,0.125) cos
+        ++(0.125,-0.125) sin ++(0.125,-0.125) cos ++(0.125,0.125)%
+      };%
+    }%
+  },%
+%%%%%%%%%%%%%%%%%%
+% Layer 3 switch %
+%%%%%%%%%%%%%%%%%%
+  layer 3 switch/.style={%
+    3D box=width 1.5cm height 1.5cm depth 0.25cm,%
+    arrows from circle=0.5cm%
+  }%
+}%
+       
+
+
+\foreach \c in {red, blue, green!50!red}{
+\colorlet{symbol color}{\c!50}
+\foreach \s in {access point, layer 3 switch, generic gateway, router 
+with firewall, router}
+	{\tikz\node[symbol=\s]{\s};\space}
+\par
+}	
+
+
+
+
+\end{document}

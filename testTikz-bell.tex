@@ -1,0 +1,29 @@
+% http://tex.stackexchange.com/questions/282730/including-tikz-file-the-key-tikz-cap-requires-a-value
+
+\documentclass[tikz,border=10pt]{standalone}
+\usetikzlibrary{shapes.geometric,bell}
+\begin{document}
+
+
+ 
+
+
+\begin{tikzpicture}
+  \pic {bell};
+  \pic at (2,0) {bell={%
+      nodes={fill opacity=.75, text=blue, text opacity=1, inner color=blue!10, outer color=blue!30, font=\sffamily, inner sep=0pt, shape=ellipse},
+      cap={draw=blue!50!black, ball color=blue!50, thick},
+      top={top},
+      left={left},
+      right={right},
+    }};
+  \pic at (4,0) {bell={%
+      nodes={text=red, draw=red, thick, fill=white, font=\sffamily, inner sep=1pt, shape=circle},
+      cap={draw=red, thick, inner color=red!95!black, outer color=red!75!black},
+      top={A},
+      left={B},
+      right={C},
+    }};
+  \pic at (6,0) {bell};
+\end{tikzpicture}
+\end{document}

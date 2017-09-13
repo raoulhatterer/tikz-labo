@@ -1,0 +1,43 @@
+% http://tex.stackexchange.com/questions/41721/optional-arguments-to-tikzpicture-to-set-style-globally
+
+\documentclass{article}
+\usepackage{tikz}
+\usepackage{xparse}
+\tikzset{
+  foo hidden/.style={}, % Provide a hidden style
+  foo/.style={foo hidden/.append style={color=#1}}, % foo changes `foo hidden`
+  foo/.default=orange,
+  bar hidden/.style={},
+  bar/.style={bar hidden/.append style={color=#1}}, % bar changes `bar hidden`
+  bar/.default=green,
+}
+
+\NewDocumentCommand{\drawthing}{o}{
+  \tikz[#1]{\draw[thick,foo hidden] (0,1)--(1,0);
+    \draw[thick,foo hidden] (0,0)--(1,1);
+    \draw[thick,bar hidden] (0,0) -- (0,1);
+  }
+}
+
+
+
+
+\begin{document}
+\begin{tabular}[h]{rl}
+Black and black:& \drawthing[]\\
+
+Blue and red:& \drawthing[foo=red,bar=blue]\\
+
+Red and blue:& \drawthing[bar=red,foo=blue]\\
+
+Green and blue:& \drawthing[foo=blue,bar]\\
+
+Black and orange:& \drawthing[foo]\\
+
+Green and black:& \drawthing[bar]\\
+\end{tabular}
+
+
+
+
+\end{document}

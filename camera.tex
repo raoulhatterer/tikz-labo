@@ -1,0 +1,154 @@
+\documentclass[tikz,border=2pt]{standalone}
+
+
+% http://tex.stackexchange.com/questions/65642/use-a-custom-shape-as-a-building-block
+
+
+\makeatletter
+
+% this declares a camera that rotates
+\pgfdeclareshape{rotcamera}
+{
+  \inheritsavedanchors[from=circle] % this is nearly a circle
+  \inheritanchorborder[from=circle]
+  \inheritanchor[from=circle]{north}
+  \inheritanchor[from=circle]{north west}
+  \inheritanchor[from=circle]{north east}
+  \inheritanchor[from=circle]{center}
+  \inheritanchor[from=circle]{west}
+  \inheritanchor[from=circle]{east}
+  \inheritanchor[from=circle]{mid}
+  \inheritanchor[from=circle]{mid west}
+  \inheritanchor[from=circle]{mid east}
+  \inheritanchor[from=circle]{base}
+  \inheritanchor[from=circle]{base west}
+  \inheritanchor[from=circle]{base east}
+  \inheritanchor[from=circle]{south}
+  \inheritanchor[from=circle]{south west}
+  \inheritanchor[from=circle]{south east}
+  \inheritbackgroundpath[from=circle]
+  \foregroundpath{
+    \centerpoint%
+    \pgf@xc=\pgf@x%         \pgf@xc = x value of centerpoint
+    \pgf@yc=\pgf@y%         \pgf@yc = y value of centerpoint
+    \pgfutil@tempdima=\radius%        \pgfutil@tempdima = radius
+    \pgfmathsetlength{\pgf@xb}{\pgfkeysvalueof{/pgf/outer xsep}}%   \pgf@xb = outer xsep
+    \pgfmathsetlength{\pgf@yb}{\pgfkeysvalueof{/pgf/outer ysep}}%    \pgf@yb = outer ysep
+    \pgfmathsetmacro{\pgf@camera@rotate}{\pgfkeysvalueof{/tikz/camera rotate}}%   \pgf@camera@rotate = camera rotate
+    \ifdim\pgf@xb<\pgf@yb%
+      \advance\pgfutil@tempdima by-\pgf@yb%
+    \else%
+      \advance\pgfutil@tempdima by-\pgf@xb%
+    \fi%
+    \pgftransformrotate{\pgf@camera@rotate}% add -90 for standard east direction
+    \pgfpathmoveto{\pgfpointadd{\pgfqpoint{\pgf@xc}{\pgf@yc}}{\pgfqpoint{0.624695047\pgfutil@tempdima}{0.780868809\pgfutil@tempdima}}}
+    \pgfpathlineto{\pgfpointadd{\pgfqpoint{\pgf@xc}{\pgf@yc}}{\pgfqpoint{2\pgfutil@tempdima}{2.5\pgfutil@tempdima}}}
+    \pgfpathlineto{\pgfpointadd{\pgfqpoint{\pgf@xc}{\pgf@yc}}{\pgfqpoint{-2\pgfutil@tempdima}{2.5\pgfutil@tempdima}}}
+    \pgfpathlineto{\pgfpointadd{\pgfqpoint{\pgf@xc}{\pgf@yc}}{\pgfqpoint{-0.624695047\pgfutil@tempdima}{0.780868809\pgfutil@tempdima}}}
+    \pgfpatharc{128.6598083}{51.34019175}{\pgfutil@tempdima}
+    \pgfpathclose
+    \pgfsetfillcolor{black}
+    \pgfusepath{fill}
+  }
+}
+
+% this declares a fixed camera, it has to be rotated by the /tikz/rotate key
+\pgfdeclareshape{fixcamera}
+{
+  \inheritsavedanchors[from=circle] % this is nearly a circle
+  \inheritanchorborder[from=circle]
+  \inheritanchor[from=circle]{north}
+  \inheritanchor[from=circle]{north west}
+  \inheritanchor[from=circle]{north east}
+  \inheritanchor[from=circle]{center}
+  \inheritanchor[from=circle]{west}
+  \inheritanchor[from=circle]{east}
+  \inheritanchor[from=circle]{mid}
+  \inheritanchor[from=circle]{mid west}
+  \inheritanchor[from=circle]{mid east}
+  \inheritanchor[from=circle]{base}
+  \inheritanchor[from=circle]{base west}
+  \inheritanchor[from=circle]{base east}
+  \inheritanchor[from=circle]{south}
+  \inheritanchor[from=circle]{south west}
+  \inheritanchor[from=circle]{south east}
+  \inheritbackgroundpath[from=circle]
+  \foregroundpath{
+    \centerpoint%
+    \pgf@xc=\pgf@x%                                                                                                                   \pgf@xc = x value of centerpoint
+    \pgf@yc=\pgf@y%                                                                                                                   \pgf@yc = y value of centerpoint
+    \pgfutil@tempdima=\radius%                                                                                              \pgfutil@tempdima = radius
+    \pgfmathsetlength{\pgf@xb}{\pgfkeysvalueof{/pgf/outer xsep}}%                                                                     \pgf@xb = outer xsep
+    \pgfmathsetlength{\pgf@yb}{\pgfkeysvalueof{/pgf/outer ysep}}%                                                                     \pgf@yb = outer ysep
+    \ifdim\pgf@xb<\pgf@yb%                                                                                                           correction of radius variable
+      \advance\pgfutil@tempdima by-\pgf@yb%
+    \else%
+      \advance\pgfutil@tempdima by-\pgf@xb%
+    \fi%
+    %\pgftransformrotate{-90}%
+    \pgfpathmoveto{\pgfpointadd{\pgfqpoint{\pgf@xc}{\pgf@yc}}{\pgfqpoint{0.624695047\pgfutil@tempdima}{0.780868809\pgfutil@tempdima}}}
+    \pgfpathlineto{\pgfpointadd{\pgfqpoint{\pgf@xc}{\pgf@yc}}{\pgfqpoint{2\pgfutil@tempdima}{2.5\pgfutil@tempdima}}}
+    \pgfpathlineto{\pgfpointadd{\pgfqpoint{\pgf@xc}{\pgf@yc}}{\pgfqpoint{-2\pgfutil@tempdima}{2.5\pgfutil@tempdima}}}
+    \pgfpathlineto{\pgfpointadd{\pgfqpoint{\pgf@xc}{\pgf@yc}}{\pgfqpoint{-0.624695047\pgfutil@tempdima}{0.780868809\pgfutil@tempdima}}}
+    \pgfpatharc{128.6598083}{51.34019175}{\pgfutil@tempdima}
+    \pgfpathclose
+    \pgfsetfillcolor{black}
+    \pgfusepath{fill}
+  }
+}
+
+\makeatother
+
+% this sets the default value of /tikz/camera rotate to 0 (no rotation, camera is oriented north)
+% if we don't set it, it's automatically zero
+\pgfkeyssetvalue{/tikz/camera rotate}{0}
+
+% this defines a /tikz/camera style that takes one optional argument,
+%  i.e. the rotation of the camera (which, again, is zero, if the argument is omitted
+\tikzset{
+    camera/.style={
+        draw,
+        ultra thick,
+        minimum size=2cm,
+        rotcamera,
+        camera rotate=#1
+    },
+    camera/.default=0
+}
+
+\begin{document}
+\begin{tikzpicture}[every node/.style={draw, ultra thick, minimum size=2cm}]
+\node[fixcamera, rotate =    0] (c1) at (0,0)    {};
+\node[fixcamera, rotate =   30] (c2) at (3,3)    {};
+\node[fixcamera, rotate = -100] (c3) at (2.8,-1) {};
+
+\draw[ultra thick, blue] (c1.south) to[out=270, in=210] (c3.210)
+                         (c3.80)    to[out=80,  in=320] (c2.320)
+                         (c2.255)   to[out=255, in=15]  (c1.15);
+\end{tikzpicture}
+
+\begin{tikzpicture}[every node/.style={draw, ultra thick, minimum size=2cm}]
+\node[rotcamera, camera rotate =    0] (c1) at (0,0)    {};
+\node[rotcamera, camera rotate =   30] (c2) at (3,3)    {};
+\node[rotcamera, camera rotate = -100] (c3) at (2.8,-1) {};
+
+\draw[ultra thick, blue] (c1.south) to[out=270, in=210] (c3.210)
+                         (c3.80)    to[out=80,  in=320] (c2.320)
+                         (c2.255)   to[out=255, in=15]  (c1.15);
+\end{tikzpicture}
+
+\begin{tikzpicture}
+\node[camera      ] (c1) at (0,0)    {};
+\node[camera=   30] (c2) at (3,3)    {};
+\node[camera= -100] (c3) at (2.8,-1) {};
+
+\draw[ultra thick, blue] (c1.south) to[out=270, in=210] (c3.210)
+                         (c3.80)    to[out=80,  in=320] (c2.320)
+                         (c2.255)   to[out=255, in=15]  (c1.15);
+\end{tikzpicture}
+
+\begin{tikzpicture}[every node/.style={draw}]
+\draw (0,0) -- node[midway,rotcamera]                   {} (3,0)
+            -- node[pos=.7,rotcamera, camera rotate=90] {} (3,3) to[out=180,in=90] (0,0) -- cycle;
+\end{tikzpicture}
+\end{document}

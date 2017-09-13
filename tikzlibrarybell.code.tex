@@ -1,0 +1,57 @@
+% tikzlibrarybell.code.tex
+\ProvidesFile{tikzlibrarybell.code.tex}
+\pgfdeclarelayer{bell edge layer}
+\pgfdeclarelayer{bell node layer}
+\pgfsetlayers{bell edge layer,bell node layer,main}
+\tikzset{% modified from code at tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarybackgrounds.code.tex
+  on bell edge layer/.style={%
+    execute at begin scope={%
+      \pgfonlayer{bell edge layer}%
+      \let\tikz@options=\pgfutil@empty%
+      \tikzset{every on bell edge layer/.try,#1}%
+      \tikz@options%
+    },
+    execute at end scope={\endpgfonlayer}
+  },
+  on bell node layer/.style={%
+    execute at begin scope={%
+      \pgfonlayer{bell node layer}%
+      \let\tikz@options=\pgfutil@empty%
+      \tikzset{every on bell node layer/.try,#1}%
+      \tikz@options%
+    },
+    execute at end scope={\endpgfonlayer}
+  },
+  pics/bell/.style={%
+    code={%
+      \tikzset{%
+        /bell/.cd,
+        #1,
+        /tikz/.cd,
+      }%
+      \path [use as bounding box] (-2,-2) rectangle (2,2);
+      \begin{scope}[on bell node layer]
+        \node [pic actions, /bell/node style] (a) at (0, 0.75) {\bell@top@node};
+        \node [pic actions, /bell/node style] (b) at (-0.5, 0) {\bell@left@node};
+        \node [pic actions, /bell/node style] (c) at (0.5, 0) {\bell@right@node};
+      \end{scope}
+      \begin{scope}[on bell edge layer]
+        \path [pic actions, /bell/cap style] (c.center) [in=0, out=90] to (a.center) [in=90, out=180] to (b.center) [in=270, out=-90, looseness=0.75]  to (c.center);
+      \end{scope}
+    }%
+  },
+  /bell/.search also={/tikz},
+  /bell/.cd,
+  top/.store in=\bell@top@node,
+  left/.store in=\bell@left@node,
+  right/.store in=\bell@right@node,
+  % this cannot be the right way to do this!!!
+  cap/.code={\tikzset{/bell/cap style/.style={/tikz/.cd, #1}}},
+  nodes/.code={\tikzset{/bell/node style/.style={/tikz/.cd, #1}}},
+  top=,
+  left=,
+  right=,
+  cap style/.style={draw},
+  node style/.style=,
+}
+\endinput

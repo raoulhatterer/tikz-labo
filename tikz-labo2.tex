@@ -1,0 +1,329 @@
+\documentclass[border=10pt, tikz]{standalone}
+ \usepackage{tikz}
+\usetikzlibrary{calc,shapes.geometric,shapes.symbols}
+
+% http://comments.gmane.org/gmane.comp.tex.pgf.user/4425
+% http://tex.stackexchange.com/questions/71487/creating-a-fifo-symbol-with-pgfdeclareshape
+% http://guy.chaumeton.pagesperso-orange.fr/2dtp11chc.htm
+
+\tikzset{%
+couleur/.style={fill={#1},top couleur/.style={fill=#1!50}},%
+}%
+
+\makeatletter%
+
+\pgfkeys{/tikz/remplissage/.initial = -1
+  cm}%hauteur de fluide -1 = vide
+
+
+
+
+% ---------------- %
+% tube à essai %
+% ---------------- %
+\pgfdeclareshape{tube à essais}{ \nodeparts{text}
+  \anchor{center}{\pgfpoint{0}{0cm}}%
+  \anchor{north}{\pgfpoint{0}{2.1cm}}%
+  \anchor{south}{\pgfpoint{0}{-2cm}}%
+  \saveddimen\hauteurphase{\pgf@x=\pgfkeysvalueof{/tikz/remplissage}}%
+
+  \behindbackgroundpath{ %
+    \path[draw,clip] (-0.5,2)--++(0,-3.5) arc (180:360:0.5)--++
+    (0,3.5)++(-0.5,0) circle [x radius=0.5, y radius=0.1];%
+    \path[couleur](-0.5,-2cm) rectangle ++(1,\hauteurphase);
+    \path[draw=white,top couleur] (0,\hauteurphase-2cm) circle [x
+    radius=0.5, y radius=0.1];%
+  }%
+}
+
+% ---------------------------- %
+% bouchon de tube à essai %
+% ---------------------------- %
+\pgfdeclareshape{bouchon de tube à essais}{ \nodeparts{text}
+  \anchor{center}{\pgfpoint{0}{0}}%
+  \anchor{north}{\pgfpoint{0}{0.5cm}}%
+  \anchor{south}{\pgfpoint{0}{-0.55cm}}%
+  \behindbackgroundpath{ %
+    \path[draw,fill=gray] (-0.6,0.4) --++(0.1,-0.4)
+    --++(0,-0.4)to[bend right]
+    ++(1,0)--++(0,0.4)--++(0.1,0.4)++(-0.6,0) circle [x radius=0.6, y
+    radius=0.12]--cycle ;%
+  }%
+}
+
+
+
+% ---------------------------- %
+% tube à essai avec bouchon %
+% ---------------------------- %
+\pgfdeclareshape{tube à essais avec bouchon}{ \nodeparts{text}
+  \anchor{center}{\pgfpoint{0}{0cm}}%
+  \anchor{north}{\pgfpoint{0}{2.5cm}}%
+  \anchor{south}{\pgfpoint{0}{-2cm}}%
+  \saveddimen\hauteurphase{\pgf@x=\pgfkeysvalueof{/tikz/remplissage}}%
+
+  \inheritbehindbackgroundpath[from={tube à essais}]
+  \backgroundpath{ %
+    \path[draw,fill=gray] (0,2)++(-0.6,0.4) --++(0.1,-0.4)
+    --++(0,-0.4)to[bend right]
+    ++(1,0)--++(0,0.4)--++(0.1,0.4)++(-0.6,0) circle [x radius=0.6, y
+    radius=0.12]--cycle;%
+    \path[draw](-0.5,2)to[bend right]++(1,0); }%
+}
+
+
+
+
+% ---------------- %
+% ballon %
+% ---------------- %
+\pgfdeclareshape{ballon}{ \nodeparts{text}
+  \anchor{center}{\pgfpoint{0}{0cm}}%
+  \anchor{north}{\pgfpoint{0}{2.7cm}}%
+  \anchor{south}{\pgfpoint{0}{-2cm}}%
+  \saveddimen\hauteurphase{\pgf@x=\pgfkeysvalueof{/tikz/remplissage}}%
+
+  \behindbackgroundpath{ %
+    \path[draw,clip] (-0.5,2.6)--++(0,-1.5) arc (108:432:1.6)--++
+    (0,1.5)++(-0.5,0) circle [x radius=0.5, y radius=0.1];%
+    \path[couleur](-1.6,-2) rectangle ++(3.2,\hauteurphase);
+    \path[draw=white,top couleur] (0,{\hauteurphase-2cm}) circle [x
+    radius=((3.2 cm-\hauteurphase)*\hauteurphase)^0.5, y radius=0.1
+    cm];%
+  }%
+}
+
+
+
+
+
+% ------------------------- %
+% ballon avec bouchon %
+% ------------------------- %
+\pgfdeclareshape{ballon avec bouchon}{ \nodeparts{text}
+  \anchor{center}{\pgfpoint{0}{0cm}}%
+  \anchor{north}{\pgfpoint{0}{3.5cm}}%
+  \anchor{south}{\pgfpoint{0}{-2cm}}%
+  \saveddimen\hauteurphase{\pgf@x=\pgfkeysvalueof{/tikz/remplissage}}%
+
+  \inheritbehindbackgroundpath[from={ballon}] \backgroundpath{ %
+    \path[draw,fill=gray] (0,3)++(-0.6,0.4) --++(0.1,-0.4)
+    --++(0,-0.4)to[bend right]
+    ++(1,0)--++(0,0.4)--++(0.1,0.4)++(-0.6,0) circle [x radius=0.6, y
+    radius=0.12]--cycle;%
+    \path[draw](-0.5,3)to[bend right]++(1,0); }%
+}
+
+% ---------------- %
+% erlenmeyer %
+% ---------------- %
+\pgfdeclareshape{erlenmeyer}{ \nodeparts{text}
+  \anchor{center}{\pgfpoint{0}{0cm}}%
+  \anchor{north}{\pgfpoint{0}{1.85cm}}%
+  \anchor{south}{\pgfpoint{0}{-2cm}}%
+  \saveddimen\hauteurphase{\pgf@x=\pgfkeysvalueof{/tikz/remplissage}}%
+
+  \behindbackgroundpath{ %
+    \path[draw,clip] (-0.5,1.75) to[rounded
+    corners=2pt]++(0,-1)to[rounded corners=10pt]++(-1,-2.5)to[rounded
+    corners=10pt, bend right=15pt]++(3,0) to[rounded
+    corners=2pt]++(-1,2.5)--++(0,1)++(-0.5,0) circle [x radius=0.5, y
+    radius=0.1];%
+    \path[couleur](-1.6,-2) rectangle (1.6,{\hauteurphase-2cm});
+    \path[draw=white,top couleur] (0,\hauteurphase-2cm) circle [x
+    radius=1.5cm-(\hauteurphase-0.25cm)*0.4 , y
+    radius=0.1 cm];%
+  }%
+}
+
+
+% -------------------------- %
+% erlenmeyer avec bouchon %
+% -------------------------- %
+\pgfdeclareshape{erlenmeyer avec bouchon}{ \nodeparts{text}
+  \anchor{center}{\pgfpoint{0}{0cm}}%
+  \anchor{north}{\pgfpoint{0}{2.5cm}}%
+  \anchor{south}{\pgfpoint{0}{-2cm}}%
+  \saveddimen\hauteurphase{\pgf@x=\pgfkeysvalueof{/tikz/remplissage}}%
+
+  \inheritbehindbackgroundpath[from={erlenmeyer}] \backgroundpath{ %
+    \path[draw,fill=gray] (0,2)++(-0.6,0.4) --++(0.1,-0.4)
+    --++(0,-0.4)to[bend right]
+    ++(1,0)--++(0,0.4)--++(0.1,0.4)++(-0.6,0) circle [x radius=0.6, y
+    radius=0.12]--cycle;%
+    \path[draw](-0.5,2)to[bend right]++(1,0); }%
+}
+
+
+
+
+% ---------------- %
+% bécher %
+% ---------------- %
+\pgfdeclareshape{bécher}{ \nodeparts{text}
+  \anchor{center}{\pgfpoint{0}{0cm}}%
+  \anchor{north}{\pgfpoint{0}{0.9cm}}%
+  \anchor{south}{\pgfpoint{0}{-2cm}}%
+  \saveddimen\hauteurphase{\pgf@x=\pgfkeysvalueof{/tikz/remplissage}}%
+
+  \behindbackgroundpath{ %
+    \path[draw,clip] (-1.1,0.68) to[rounded
+    corners=2pt]++(0.1,-0.1)to[rounded
+    corners=7pt]++(0,-2.4)to[rounded corners=7pt, bend
+    right=15pt]++(2,0) --++(0,2.53)++(-1.05,0) circle [x radius=1.05,
+    y radius=0.2];%
+    \path[couleur](-1,-2) rectangle ++(2,\hauteurphase);
+    \path[draw=white,top couleur] (0,\hauteurphase-2cm) circle [x
+    radius=1cm , y radius=0.1 cm];%
+  }%
+}
+
+
+% ---------------- %
+% bécher incliné %
+% ---------------- %
+\pgfdeclareshape{bécher incliné}{ \nodeparts{text}
+  \anchor{center}{\pgfpoint{1.25cm*sin(30)}{1.25cm*cos(30)}}%
+  \anchor{north}{\pgfpoint{2.5cm*sin(30)}{2.5cm*cos(30)}}%
+  \anchor{bottom}{\pgfpoint{-0.17cm*sin(30)}{-0.17cm*cos(30)}}%
+  \anchor{south}{\pgfpoint{cos(45)*1cm}{-0.45cm}}%
+  \saveddimen\hauteurphase{\pgf@x=\pgfkeysvalueof{/tikz/remplissage}}%
+
+  \behindbackgroundpath{ %
+    \pgftransformrotate{-30}%
+    \path[draw,clip] (-1.1,2.5) to[rounded
+    corners=2pt]++(0.1,-0.1)to[rounded
+    corners=7pt]++(0,-2.4)to[rounded corners=7pt, bend
+    right=15pt]++(2,0) --++(0,2.53)++(-1.05,0) circle [x radius=1.05,
+    y radius=0.2];%
+    \pgftransformrotate{30}%
+    \path[couleur](-1,-0.5) rectangle (2.5,{cos(30)*\hauteurphase});
+    \path[draw=white,top couleur]
+    ({sin(30)*\hauteurphase},{cos(30)*\hauteurphase}) circle [x
+    radius={1cm/cos(30)} , y radius={0.1 cm/cos(30)}];%
+    \pgftransformrotate{-30}%
+    \path[draw,clip] (-1.1,2.5) to[rounded
+    corners=2pt]++(0.1,-0.1)to[rounded
+    corners=7pt]++(0,-2.4)to[rounded corners=7pt, bend
+    right=15pt]++(2,0) --++(0,2.53)++(-1.05,0) circle [x radius=1.05,
+    y radius=0.2];%
+  }%
+}
+
+
+% ---------------- %
+% bécher versant %
+% ---------------- %
+\pgfdeclareshape{bécher versant}{ \nodeparts{text}
+  \anchor{center}{\pgfpoint{1.25cm*sin(-45)}{1.25cm*cos(45)}}%
+  \anchor{north}{\pgfpoint{2.5cm*sin(-45)}{2.5cm*cos(45)}}%
+  \anchor{bottom}{\pgfpoint{-0.17cm*sin(-45)}{-0.17cm*cos(45)}}%
+  \anchor{south}{\pgfpoint{-cos(45)*1cm}{-1cm*cos(45)+0.8mm}}%
+  \saveddimen\hauteurphase{\pgf@x=\pgfkeysvalueof{/tikz/remplissage}}%
+
+  \behindbackgroundpath{ %
+    \pgftransformrotate{45} \path[draw,clip] (-1.1,2.5) to[rounded
+    corners=2pt]++(0.1,-0.1)to[rounded
+    corners=7pt]++(0,-2.4)to[rounded corners=7pt, bend
+    right=15pt]++(2,0) --++(0,2.53)++(-1.05,0) circle [x radius=1.05,
+    y radius=0.2];%
+    \pgftransformrotate{-45}%
+    \path[couleur](1,-0.9) rectangle (-3,{cos(-45)*\hauteurphase});
+    \path[draw=white,top couleur]
+    ({sin(-45)*\hauteurphase},{cos(-45)*\hauteurphase}) circle [x
+    radius={1cm/cos(45)} , y radius={0.1 cm/cos(45)}];%
+    \pgftransformrotate{45}%
+    \path[draw,clip] (-1.1,2.5) to[rounded
+    corners=2pt]++(0.1,-0.1)to[rounded
+    corners=7pt]++(0,-2.4)to[rounded corners=7pt, bend
+    right=15pt]++(2,0) --++(0,2.53)++(-1.05,0) circle [x radius=1.05,
+    y radius=0.2];%
+  }%
+}
+
+
+% --------------------------------------- %
+% fiole jaugée partiellement remplie %
+% --------------------------------------- %
+\pgfdeclareshape{fiole jaugée partiellement remplie}{ \nodeparts{text}
+  \anchor{center}{\pgfpoint{0}{1cm}}%
+  \anchor{north}{\pgfpoint{0}{3.5cm}}%
+  \anchor{south}{\pgfpoint{0}{-0.67cm}}%
+ 
+  \behindbackgroundpath{ %
+    \path[draw,clip] (-0.23,3.5) to[rounded corners=0.5pt] ++(0,-0.05)
+    to[rounded corners=0.5pt]++(0.03,0) to[rounded
+    corners=2pt]++(0,-2.45)to[rounded corners=10pt, bend
+    right=25pt]++(-0.8,-1.5)to[rounded corners=10pt, bend
+    right=15pt]++(2,0) to[rounded corners=2pt, bend
+    right=25pt]++(-0.8,1.5) to[rounded corners=0.5pt]++(0,2.45)
+    to[rounded corners=0.5pt]++(0.03,0) --++(0,0.05)++(-0.23,0) circle
+    [x radius=0.23, y radius=0.05] circle [x radius=0.20, y
+    radius=0.03]++(0,-1.5) circle [x radius=0.2, y radius=0.02];%
+
+    \path[couleur](-1,-0.68) rectangle (1,0.4);%
+    \path[draw=white,top couleur] (0,0.4cm) circle [x radius=0.77cm ,
+    y radius=0.1 cm];%
+  }%
+}
+
+
+
+\makeatother
+
+\begin{document}
+
+
+
+\begin{tikzpicture}[anchor= north, couleur = red, remplissage = 1cm]
+  \draw [help lines] (0,0) node[below]{O}grid(32,6);%
+
+  \draw (0,5)node[tube à essais]{1}%
+  ++(2,0) node[bouchon de tube à essais]{2}
+  ++(2,0) node[tube à essais avec bouchon]{3}
+  ++(3,0) node[ballon]{4}
+  ++(4,0) node[ballon avec bouchon]{5}
+  ++(3,0) node[erlenmeyer]{6}
+  ++(3,0) node[erlenmeyer avec bouchon]{7}
+  ++(3,0) node[bécher]{8}
+  ++(3,0) node[bécher incliné]{9}
+  ++(4,0) node[bécher versant]{10}
+  ++(3,0) node[fiole jaugée partiellement remplie]{11};
+\end{tikzpicture}
+
+
+\begin{tikzpicture}
+  \draw [help lines] (0,0) node[below]{O}grid(4,2);%
+  % exemple 1
+  \node [fiole jaugée partiellement remplie, anchor= south, scale=1,
+  couleur = yellow, remplissage=1.5cm] (te) at (0,0){};%
+
+  \draw (1,1) -- (te.north);%
+  \draw[red] (1,1)-- (te.center);%
+  \draw (1,1) -- (te.south);%
+  % exemple 2
+  \node [bouchon de tube à essais,scale=1] (bt) at (2,0){};%
+  \draw (1,1) -- (bt.north);%
+  \draw[red] (1,1)-- (bt.center);%
+  \draw (1,1) -- (bt.south);%
+
+  \node [tube à essais,scale=2,anchor=north,rotate=5,couleur=red, remplissage =
+  2cm] (teb) at (4,0){};%
+  \draw (1,1) -- (teb.north);%
+  \draw[red] (1,1)-- (teb.center);%
+  \draw (1,1) -- (teb.south);%
+
+
+  \node [erlenmeyer,scale=0.5 ,anchor=center,rotate=20, couleur =
+  blue] (tev) at (-2,-5){};%
+  \draw (1,1) -- (tev.north);%
+  \draw[red] (1,1)-- (tev.center);%
+  \draw (1,1) -- (tev.south);%
+
+
+\end{tikzpicture}
+
+
+
+
+\end{document}

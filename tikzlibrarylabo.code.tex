@@ -1,0 +1,58 @@
+
+\tikzset{
+	symbol lines/.style={
+		very thick,
+		line join=round,
+	},
+}
+\colorlet{symbol fill}{blue!50}
+\colorlet{symbol draw}{black!25}
+
+\pgfdeclareshape{cable modem}{ \nodeparts{}
+  \anchor{center}{\pgfpoint{0.75cm}{0.5cm}}
+  \anchor{north}{\pgfpoint{1.125cm}{1cm}}
+  \anchor{south}{\pgfpoint{1.125cm}{0cm}}%
+  \behindbackgroundpath{%
+    \path [fill=symbol fill, draw=symbol draw, symbol lines] (0,0) --
+    (0,0.5) -- (0.5,1) -- (1.75,1) -- (1.75,0.5) -- (1.25,0) --
+    cycle;%
+    \path [draw=symbol draw, symbol lines] (0,0.5) -- (1.25,0.5) --
+    (1.75,1) (1.25,0.5) -- (1.25,0); %
+    \path [draw=symbol draw, line width=0.1cm, stealth-stealth,
+    fill=symbol draw] (0.0625,0.25) -- (0.875,0.25);%
+    \path [draw=symbol draw, line width=0.1cm, -stealth, fill=symbol
+    draw, line join=rect] (1,0.25) -- ++(-0.1, 0); } }
+
+
+
+
+
+  \tikzset{
+    pics/profdiwb/.style n args={2}{
+      code={
+        \path [draw, line cap=round, #1, pic actions] (0,0) arc (180:0:#2/15) coordinate (tiwb1) -- +(0,-#2) coordinate (tiwb2) arc (-180:0:#2/6) coordinate (tiwb3) -- + (0,#2) coordinate (tiwb4) arc (180:0:#2/15);
+        \coordinate (tiwb5) at ($(tiwb1)!1/3!(tiwb2)$);
+        \coordinate (tiwb12) at ($(tiwb3)!2/3!(tiwb4)$);
+        \begin{scope}[fill=#1!50, draw=#1]
+            \clip (tiwb1) -- (tiwb2) arc (-180:0:#2/6) -- (tiwb4);
+            \path [fill=#1!50, draw=#1, decoration={snake, amplitude=#2/50}, segment length=#2/5, decorate, pic actions] ($(tiwb2) - (#2/5,#2/5)$) -| ($(tiwb12) + (#2/5,0)$) -- ($(tiwb5) - (#2/5,0)$) -- cycle;
+        \end{scope}
+        \path [draw, line cap=round, #1, pic actions] (0,0) arc (180:0:#2/15) coordinate (tiwb1) -- +(0,-#2) coordinate (tiwb2) arc (-180:0:#2/6) coordinate (tiwb3) -- + (0,#2) coordinate (tiwb4) arc (180:0:#2/15);
+        \path [fill=white, draw=#1, line width=.0075*#2]
+          ($(tiwb1)!3/4!(tiwb3)$) coordinate (tiwb7) circle (.0275*#2)
+          ($(tiwb7)!1/3!(tiwb2)$) coordinate (tiwb8) circle (.02*#2)
+          ($(tiwb4)!5/7!(tiwb2)$) coordinate (tiwb11) circle (.025*#2)
+          ($(tiwb1)!5/6!(tiwb7)$) circle (.03*#2)
+          ($(tiwb2)!1/2!(tiwb4)$) coordinate (tiwb6) circle (.035*#2)
+          ($(tiwb2)!1/2!(tiwb3) + (.025*#2,0)$) coordinate (tiwb9) circle (.015*#2)
+          ($(tiwb9)!1/2!(tiwb8) - (.025*#2,0)$) circle (.0175*#2)
+          ($(tiwb9) - (.01*#2,.075*#2)$) circle (.01*#2)
+          ($(tiwb1)!1/3!(tiwb3)$) coordinate (tiwb10) circle (.04*#2)
+          ($(tiwb1)!1/2!(tiwb4)!1/3!(tiwb6)$) circle (.05*#2)
+          ($(tiwb1)!1/2!(tiwb4)!1/7!(tiwb10)$) circle (.035*#2)
+          ($(tiwb1)!1/2!(tiwb4)!0.001!(tiwb11) + (.05*#2,.05*#2)$) circle (.02*#2)
+          ;
+        \draw [black, thin, <->] ($(tiwb3) + (2.5pt,0)$) -- ($(tiwb5 -| tiwb4) + (2.5pt,0)$);
+      }
+    },
+  }

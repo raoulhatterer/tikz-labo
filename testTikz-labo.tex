@@ -1,0 +1,40 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{shapes.symbols}
+\usetikzlibrary{decorations.pathmorphing}
+
+\usetikzlibrary{labo}
+\begin{document}
+
+Test tikzlabo:
+\begin{tikzpicture}[level distance=2cm, every child/.style={symbol lines}]
+	\draw [help lines] (0,0) node[below]{O}grid(3,2);
+	\node [cable modem] (c) at (0.75,0.5){};
+	
+	\draw (3,2) -- (c.north) (3,0) -- (c.south);
+\end{tikzpicture}
+
+
+
+
+
+  \begin{tikzpicture}
+    \draw pic {profdiwb={magenta}{2cm}};
+    \draw pic at (2cm,0) {profdiwb={red}{1cm}};
+    \draw pic at (3cm,0) {profdiwb={orange}{20pt}};
+  \end{tikzpicture}
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

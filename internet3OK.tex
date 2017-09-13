@@ -1,0 +1,131 @@
+\documentclass{article} 
+\usepackage{tikz} 
+\usetikzlibrary{shapes.symbols} 
+\usetikzlibrary{intersections} 
+\usetikzlibrary{positioning} 
+\usetikzlibrary{mindmap} 
+\begin{document} 
+\makeatletter 
+\tikzset{ 
+  symbol/.style={ 
+    execute at begin node={ 
+      \begin{tikzpicture} 
+        \def\tikz@atbegin@node{} 
+        \tikzset{symbols/#1} 
+      \end{tikzpicture} 
+    }       
+  } 
+} 
+\makeatother 
+\tikzset{ 
+  symbol lines/.style={ 
+    very thick, 
+    line join=round, 
+  }, 
+} 
+\colorlet{symbol fill}{black!50} 
+\colorlet{symbol draw}{black!25} 
+
+
+
+\tikzset{symbols/.cd, 
+  % ----------- % 
+  %   Internet  % 
+  % ----------- % 
+  internet/.code={ 
+    \node [cloud, cloud puffs=9, cloud puff arc=110, minimum width=2.5cm, minimum height=1.5cm, fill=symbol fill,draw=symbol draw]{}; 
+  }, 
+  % ----------- % 
+  %    Modem    % 
+  % ----------- % 
+  modem/.code={ 
+    \path [fill=symbol fill, draw=symbol draw, symbol lines] (0,0) -- (0,0.5) -- (0.5,1) -- (1.75,1) -- (1.75,0.5) -- (1.25,0) -- cycle; 
+    \path [draw=symbol draw, symbol lines] (0,0.5) -- (1.25,0.5) -- (1.75,1) (1.25,0.5) -- (1.25,0); 
+    \path [draw=symbol draw, line width=0.1cm, stealth-stealth, fill=symbol draw] (0.0625,0.25) -- (0.875,0.25); 
+    \path [draw=symbol draw, line width=0.1cm, -stealth, fill=symbol draw,line join=rect] (1,0.25) -- ++(-0.1, 0); 
+    % \node {0}; 
+  }, 
+  % ----------- % 
+  %    Switch   % 
+  % ----------- % 
+  switch/.code={ 
+    \path [fill=symbol fill, draw=symbol draw, symbol lines] (0,0) -- (0,0.5) -- (0.5,1) -- (1.75,1) -- (1.75,0.5) -- (1.25,0) -- cycle; 
+    \path[name path=diagOne] (0,0.5) -- (1.75,1); 
+    \path[name path=diagTwo] (0.5,1) -- (1.25,0.5); 
+    \begin{scope}[fill=symbol draw] 
+      \path[name intersections={of=diagOne and diagTwo, by=int},draw=symbol draw, line width=0.06cm,stealth-stealth] % cf p 131 
+      (int) ++(45:0.17cm) ++(0.5,0) -- ++(-0.5,0) -- ++ (45:-0.34cm) -- ++ (-0.5,0);% (int) -- ++(45:-0.2cm) -- +(-0.3,0); 
+      \path[name intersections={of=diagOne and diagTwo, by=int},draw=symbol draw, line width=0.06cm,stealth-stealth] % cf p 131 
+      (int) ++(110:0.13cm) ++(-0.35,0) -- ++(0.35,0) -- ++ (-70:0.26cm) -- ++ (0.35,0);% (int) -- ++(45:-0.2cm) -- +(-0.3,0); 
+    \end{scope} 
+    \path [draw=symbol draw, symbol lines] 
+    (0,0.5) -- (1.25,0.5) -- (1.75,1) (1.25,0.5) -- (1.25,0); 
+  }, 
+  % ----------- % 
+  %   Terminal  % 
+  % ----------- % 
+  terminal/.code={ 
+    \begin{scope}[scale=0.1,thick] 
+    \path [fill=symbol fill, draw=black!80,rounded corners=3pt] (0,0) rectangle (10cm,8cm); 
+    \path [fill=black!80, draw=black!80] (4cm,0cm) rectangle +(2cm,-2.5cm); 
+    \path [fill=black!80, draw=black!80] (5,-2.5) circle [x radius=4cm,y radius=0.8cm]; 
+    \path [fill=symbol fill, draw=black!80,rounded corners=3pt] (11,-2.5) rectangle +(4cm,9cm); 
+    \node [fill=green!20,shape=circle,inner sep=0] at (12.75,3) {} ; 
+    \node [fill=red!20,shape=circle,inner sep=0] at (13.25,3) {} ; 
+    \path [fill=black!80] (13,2) circle [radius=0.35cm]; 
+    \path [draw=red!90,rounded corners=3pt,very thin] (13,2) +(60:0.2cm) arc (60:-240:0.2cm) (13,2)-- (13,2.25); 
+    \end{scope} 
+  }, 
+  % ----------- % 
+  %    Router   % 
+  % ----------- % 
+  router/.code={ 
+    \fill[symbol fill] (0,0)  arc (0:180:0.8cm and 0.5cm) -- ++(0,-0.3) arc (-180:0:0.8cm and 0.5cm)-- ++(0,0.3); 
+    \path[draw=symbol draw,symbol lines] (0,0)  arc (0:360:0.8cm and 0.5cm) -- ++(0,-0.3) arc (0:-180:0.8cm and 0.5cm)-- ++(0,0.3); 
+    \node[shape=circle,inner sep=0pt,minimum size=1.3mm] at (-0.8cm,0) (center) {}; 
+    \path [draw=symbol draw, line width=0.08cm, -stealth, fill=symbol draw,line join=rect] (node cs:name=center,angle=35) ++(35:0.03) -- +(35:0.5cm); 
+    \path [draw=symbol draw, line width=0.08cm, stealth- , fill=symbol draw,line join=rect](node cs:name=center,angle=150) -- +(150:0.5cm); 
+    \path [draw=symbol draw, line width=0.08cm, -stealth, fill=symbol draw,line join=rect](node cs:name=center,angle=-145) ++(-145:0.03cm) -- +(-145:0.5cm); 
+    \path [draw=symbol draw, line width=0.08cm, stealth- , fill=symbol draw,line join=rect](node cs:name=center,angle=-30) -- +(-30:0.5cm); 
+  } 
+} 
+
+\begin{tikzpicture}[level distance=2cm, every child/.style={symbol lines}] 
+  \node [symbol=internet, label=center:Internet] {} 
+  child { node [symbol=modem, label=right:modem] {} 
+    child { node [symbol=router] {} 
+      child { node [symbol=switch] {} 
+        child { node [symbol=terminal] {} 
+        } 
+      } 
+    } 
+  }; 
+\end{tikzpicture} 
+
+
+\begin{tikzpicture}[ 
+  very thick, 
+  router/.style={circle,symbol=router,inner sep=0pt}, 
+  terminal/.style={rectangle,symbol=terminal,inner sep=0pt}, 
+  switch/.style={rectangle,symbol=switch,inner sep=0pt}, 
+  internet/.style={circle,symbol=internet,inner sep=0pt}, 
+  modem/.style={circle,symbol=modem,inner sep=0pt}, 
+  addr/.style={inner sep=0.6ex,align=center,fill=red!10,rounded corners,outer sep=1pt}] 
+
+    \node (t1) [terminal] {}; 
+    \node (t1a) [below=0cm of t1] [addr] {192.0.0.1\\255.255.255.240}; 
+    \node (t2) [below=1cm of t1] [terminal] {}; 
+    \node (t1a) [below=0cm of t2] [addr] {192.0.0.2\\255.255.255.240}; 
+    \node (t3) [below=1cm of t2] [terminal] {}; 
+    \node (t1a) [below=0cm of t3] [addr] {192.0.0.3\\255.255.255.240}; 
+    \node (r1) [right=2cm of t2] [router] {}; 
+    \node (r1i1) [left=-0.3cm of r1] [addr] {.1} 
+    edge [-] (t1) 
+    edge [-] (t2) 
+    edge [-] (t3); 
+    \node (s1) [below=4cm of r1] [switch] {}; 
+    \node (r1i2) [below=-0.4cm of r1] [addr] {.1} 
+    edge [-] (s1); 
+    
+\end{tikzpicture} 
+\end{document} 
